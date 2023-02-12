@@ -1,0 +1,52 @@
+{
+    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+    "meta": {
+        "version": "PTDL_v2",
+        "update_url": null
+    },
+    "exported_at": "2023-01-05T11:04:39+01:00",
+    "name": "WebHosting",
+    "author": "braddevans123@gmail.com",
+    "description": "The Nginx Webhosting egg.",
+    "features": null,
+    "docker_images": {
+        "ghcr.io\/parkervcp\/yolks:debian": "ghcr.io\/parkervcp\/yolks:debian"
+    },
+    "file_denylist": [],
+    "startup": "/bin/sh systemctl start nginx",
+    "config": {
+        "files": "{}",
+        "startup": "{\r\n    \"done\": \"Server is ready to receive web requests.\"\r\n}",
+        "logs": "{}",
+        "stop": "^C"
+    },
+    "scripts": {
+        "installation": {
+            "script": "#!\\/bin\\/sh\\r\\nshopt -s extglob\\r\\n# Switch to mounted directory\\r\\ncd \\/mnt\\/server\\r\\n# Update installation system and install curl\\r\\napt-get update\\r\\napt-get install -y curl nginx\\r\\nARCH=$([[ \\\"$(uname -m)\\\" == \\\"x86_64\\\" ]] && echo \\\"amd64\\\" || echo \\\"arm64\\\")\\r\\n\\r\\n# Cleanup previous install if available\\r\\nif [ -z \\\"$(ls -A \\/home\\/container)\\\" ]; then\\r\\n   echo \\\"directory found to be Empty\\\";\\r\\n   git clone https:\\/\\/github.com\\/braddevans\\/pter-nginx-egg.git \\/tmp\\/egg\\r\\n   ls -lash \\/tmp\\/egg\\/\\r\\n   cp \\/tmp\\/egg\\/container\\/* . -v\\r\\n   ln -S \\/home\\/container\\/conf\\/nginx-site.conf \\/etc\\/nginx\\/sites-enabled\\/site.conf\\r\\nelse\\r\\n   echo \\\"Not Empty\\\"\\r\\nfi",
+            "container": "debian:buster-slim",
+            "entrypoint": "bash"
+        }
+    },
+    "variables": [
+        {
+            "name": "Site Name",
+            "description": "The version of Prometheus to install. By default the latest version is being installed.",
+            "env_variable": "SITE_NAME",
+            "default_value": "example.com",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:201",
+            "field_type": "text"
+        },
+		{
+            "name": "Site port",
+            "description": "The version of Prometheus to install. By default the latest version is being installed.",
+            "env_variable": "SITE_NAME",
+            "default_value": "{{SERVER_PORT}}",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|integer|max:6",
+            "field_type": "text"
+        }
+    ]
+}
